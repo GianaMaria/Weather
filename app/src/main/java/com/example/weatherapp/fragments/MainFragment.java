@@ -17,12 +17,24 @@ import com.example.weatherapp.HttpWeather;
 import com.example.weatherapp.MainActivity;
 import com.example.weatherapp.Parcel;
 import com.example.weatherapp.model.WeatherRequest;
+import com.example.weatherapp.util.ServerAPI;
+import com.example.weatherapp.util.ServerWeatherAPIGenerator;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainFragment extends Fragment {
 
+    private static ServerWeatherAPIGenerator serverWeatherAPIGenerator;
     private HttpWeather httpClient;
+
     Handler handler;
 
     EditText city;
@@ -84,19 +96,24 @@ public class MainFragment extends Fragment {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                final String url = String.format(WEATHER_URL,
-                        mCity, BuildConfig.WEATHER_API_KEY);
+
+                ServerAPI serverAPI = serverWeatherAPIGenerator.createServer();
+
+                Call<WeatherRequest> weatherRequestRet = serverAPI.listWeather(mCity, BuildConfig.WEATHER_API_KEY);
+
+                final Response<WeatherRequest> response;
+
                 try {
-                    final WeatherRequest weatherRequest = httpClient.getWeather(url);
+                    response = weatherRequestRet.execute();
 
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            displayWeather(weatherRequest);
+                            displayWeather(response.body());
                         }
                     });
 
-                } catch (Exception e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -127,7 +144,6 @@ public class MainFragment extends Fragment {
         temperature = view.findViewById(R.id.textTemper);
         windSPD = view.findViewById(R.id.textWind);
         forecast = view.findViewById(R.id.textForecast);
-
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             Parcel parcel = (Parcel) bundle.getSerializable("city");
@@ -140,5 +156,4 @@ public class MainFragment extends Fragment {
         handler = new Handler();
         httpClient = new HttpWeather();
     }
-
 }

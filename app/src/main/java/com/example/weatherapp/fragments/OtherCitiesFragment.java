@@ -13,7 +13,6 @@ import com.example.weather.R;
 import com.example.weatherapp.MainActivity;
 import com.example.weatherapp.Parcel;
 import com.example.weatherapp.adapters.CitiesAdapter;
-
 import java.util.Date;
 
 public class OtherCitiesFragment extends Fragment {

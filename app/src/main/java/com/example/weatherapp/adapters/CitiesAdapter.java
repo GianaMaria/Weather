@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.weather.R;
 
+import java.io.IOException;
+
 public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.CityViewHolder> {
 
     String[] cities;

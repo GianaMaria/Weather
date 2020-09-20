@@ -17,8 +17,13 @@ import com.example.weatherapp.HttpWeather;
 import com.example.weatherapp.MainActivity;
 import com.example.weatherapp.adapters.WeatherStoryAdapter;
 import com.example.weatherapp.model.WeatherStory;
+import com.example.weatherapp.util.ServerAPI;
+import com.example.weatherapp.util.ServerWeatherAPIGenerator;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class HistoryFragment extends Fragment {
 
@@ -26,6 +31,8 @@ public class HistoryFragment extends Fragment {
     private HttpWeather httpClient;
     Handler handler;
     String mCity;
+
+    private static ServerWeatherAPIGenerator serverWeatherAPIGenerator;
 
     TextView textViewHistoryCity;
 
@@ -55,14 +62,19 @@ public class HistoryFragment extends Fragment {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                final String url = String.format(WEATHER_STORY_URL,
-                        mCity, BuildConfig.WEATHER_API_KEY);
+
+                ServerAPI serverAPI = serverWeatherAPIGenerator.createServer();
+
+                Call<WeatherStory> weatherStoryCall = serverAPI.listStory(mCity, BuildConfig.WEATHER_API_KEY);
+
+                final Response<WeatherStory> response;
+
                 try {
-                    final WeatherStory weatherRequest = httpClient.getWeatherStory(url);
+                    response = weatherStoryCall.execute();
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            displayWeatherStory(weatherRequest);
+                            displayWeatherStory(response.body());
                         }
                     });
 
