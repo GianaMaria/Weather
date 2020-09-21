@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -19,21 +20,17 @@ import com.example.weatherapp.Parcel;
 import com.example.weatherapp.model.WeatherRequest;
 import com.example.weatherapp.util.ServerAPI;
 import com.example.weatherapp.util.ServerWeatherAPIGenerator;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainFragment extends Fragment {
 
     private static ServerWeatherAPIGenerator serverWeatherAPIGenerator;
-    private HttpWeather httpClient;
 
     Handler handler;
 
@@ -62,6 +59,26 @@ public class MainFragment extends Fragment {
         return view;
     }
 
+    private void init(View view) {
+        buttonRefresh = (Button) view.findViewById(R.id.buttonRefresh);
+        buttonHistory = (Button) view.findViewById(R.id.buttonForecast5);
+
+        city = view.findViewById(R.id.textCity);
+        temperature = view.findViewById(R.id.textTemper);
+        windSPD = view.findViewById(R.id.textWind);
+        forecast = view.findViewById(R.id.textForecast);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            Parcel parcel = (Parcel) bundle.getSerializable("city");
+            mCity = parcel.getCityName();
+        } else {
+            mCity = "Moscow";
+
+        }
+
+        handler = new Handler();
+        HttpWeather httpClient = new HttpWeather();
+    }
 
     private void buttonSetClick() {
 
@@ -136,24 +153,5 @@ public class MainFragment extends Fragment {
 
     }
 
-    private void init(View view) {
-        buttonRefresh = (Button) view.findViewById(R.id.buttonRefresh);
-        buttonHistory = (Button) view.findViewById(R.id.buttonForecast5);
 
-        city = view.findViewById(R.id.textCity);
-        temperature = view.findViewById(R.id.textTemper);
-        windSPD = view.findViewById(R.id.textWind);
-        forecast = view.findViewById(R.id.textForecast);
-        Bundle bundle = this.getArguments();
-        if (bundle != null) {
-            Parcel parcel = (Parcel) bundle.getSerializable("city");
-            mCity = parcel.getCityName();
-        } else {
-            mCity = "Moscow";
-
-        }
-
-        handler = new Handler();
-        httpClient = new HttpWeather();
-    }
 }

@@ -1,10 +1,14 @@
 package com.example.weatherapp;
 
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,8 +28,10 @@ import com.example.weatherapp.fragments.MainFragment;
 import com.example.weatherapp.fragments.OtherCitiesFragment;
 import com.example.weatherapp.fragments.SettingsFragment;
 import com.example.weatherapp.model.City;
+import com.example.weatherapp.util.CircleTransformation;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -37,11 +43,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 
+    ImageView imageView;
+
     DialogBuilderFragment dialogBuilderFragment;
     OtherCitiesFragment otherCitiesFragment = new OtherCitiesFragment();
 
     private ArrayList<City> cities = new ArrayList<City>();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +96,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         dialogBuilderFragment = new DialogBuilderFragment();
+
+
+        imageView = navigationView.getHeaderView(0).findViewById(R.id.imageView);
+
+        Picasso.with(this)
+                .load("https://klike.net/uploads/posts/2019-03/1551511784_4.jpg")
+                .transform(new CircleTransformation())
+                .placeholder(R.drawable.ic_action_name_account)
+                .error(R.drawable.ic_action_name_error)
+                .into(imageView);
     }
 
     @Override
@@ -224,5 +241,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void addCityArray(String city, long date) {
         cities.add(new City(city, date));
     }
+
 
 }
