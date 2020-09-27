@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
+
 import com.example.weather.R;
 import com.example.weatherapp.MainActivity;
 import com.example.weatherapp.adapters.HistoryOfRequestsByCityAdapter;
@@ -14,7 +15,6 @@ import com.example.weatherapp.adapters.HistoryOfRequestsByCityAdapter;
 public class HistoryOfRequestsByCityFragment extends Fragment {
 
     ListView ListViewRequestDate;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

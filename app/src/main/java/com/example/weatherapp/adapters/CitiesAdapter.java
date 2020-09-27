@@ -14,14 +14,14 @@ import java.io.IOException;
 
 public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.CityViewHolder> {
 
-    String[] cities;
+    private String[] cities;
     private OnCityClickListener onCityClickListener;
 
     public void setOnCityClickListener(OnCityClickListener onCityClickListener) {
         this.onCityClickListener = onCityClickListener;
     }
 
-    public void setCities(String[] cities){
+    public void setCities(String[] cities) {
         this.cities = cities;
         notifyDataSetChanged();
     }
@@ -57,7 +57,7 @@ public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.CityViewHo
         }
     }
 
-    static class CityViewHolder extends RecyclerView.ViewHolder {
+    protected class CityViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
         private final View chevron;
 

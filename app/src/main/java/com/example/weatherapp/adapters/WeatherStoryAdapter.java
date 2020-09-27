@@ -40,12 +40,12 @@ public class WeatherStoryAdapter extends BaseAdapter {
 
         String[] s = getWeatherStory(i);
 
-            ((TextView) mView.findViewById(R.id.date_history)).setText(getDate(Long.parseLong(s[0])));
-            ((TextView) mView.findViewById(R.id.temperature_history)).setText(s[1]);
-            ((TextView) mView.findViewById(R.id.pressure_history)).setText(s[2]);
-            ((TextView) mView.findViewById(R.id.Humidity_history)).setText(s[3]);
-            ((TextView) mView.findViewById(R.id.forecast_history)).setText(s[4]);
-            ((TextView) mView.findViewById(R.id.windspd_history)).setText(s[5]);
+        ((TextView) mView.findViewById(R.id.date_history)).setText(getDate(Long.parseLong(s[0])));
+        ((TextView) mView.findViewById(R.id.temperature_history)).setText(s[1]);
+        ((TextView) mView.findViewById(R.id.pressure_history)).setText(s[2]);
+        ((TextView) mView.findViewById(R.id.Humidity_history)).setText(s[3]);
+        ((TextView) mView.findViewById(R.id.forecast_history)).setText(s[4]);
+        ((TextView) mView.findViewById(R.id.windspd_history)).setText(s[5]);
 
         return mView;
     }

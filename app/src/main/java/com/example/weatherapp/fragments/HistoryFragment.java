@@ -28,12 +28,11 @@ import retrofit2.Response;
 public class HistoryFragment extends Fragment {
 
     private static final String WEATHER_STORY_URL = "http://api.openweathermap.org/data/2.5/forecast?q=%s&appid=%s";
+    private static final String TAG = "WEATHER";
     private HttpWeather httpClient;
+    private static ServerWeatherAPIGenerator serverWeatherAPIGenerator;
     Handler handler;
     String mCity;
-
-    private static ServerWeatherAPIGenerator serverWeatherAPIGenerator;
-
     TextView textViewHistoryCity;
 
     @Override
@@ -71,15 +70,20 @@ public class HistoryFragment extends Fragment {
 
                 try {
                     response = weatherStoryCall.execute();
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            displayWeatherStory(response.body());
-                        }
-                    });
-
+                    if (response.isSuccessful()) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                displayWeatherStory(response.body());
+                            }
+                        });
+                    } else {
+                        ServerWeatherAPIGenerator.parseError(response);
+                        ((MainActivity) getActivity()).onClickDialogBuilder(getView());
+                    }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Error load display");
+
                 }
             }
         });
@@ -88,29 +92,24 @@ public class HistoryFragment extends Fragment {
 
     private void displayWeatherStory(WeatherStory weatherStory) {
 
-        if (weatherStory.getCod() == 200) {
+        ArrayList<String[]> story = new ArrayList<>();
+        String[] temp = new String[6];
 
-            ArrayList<String[]> story = new ArrayList<>();
-            String[] temp = new String[6];
-
-            for (int i = 0; i < weatherStory.getList().length; i++) {
-                temp[0] = String.valueOf(weatherStory.getList()[i].getDt());
-                temp[1] = weatherStory.getList()[i].getMain().getTempCels() + " °С";
-                temp[2] = weatherStory.getList()[i].getMain().getPressure() + " mmHg";
-                temp[3] = weatherStory.getList()[i].getMain().getHumidity() + " %";
-                temp[4] = String.valueOf(weatherStory.getList()[i].getWeather()[0].getMain());
-                temp[5] = weatherStory.getList()[i].getWind().getSpeed() + " m/c";
-                if (i % 8 == 1) {
-                    story.add(temp);
-                }
-                temp = new String[temp.length];
+        for (int i = 0; i < weatherStory.getList().length; i++) {
+            temp[0] = String.valueOf(weatherStory.getList()[i].getDt());
+            temp[1] = weatherStory.getList()[i].getMain().getTempCels() + " °С";
+            temp[2] = weatherStory.getList()[i].getMain().getPressure() + " mmHg";
+            temp[3] = weatherStory.getList()[i].getMain().getHumidity() + " %";
+            temp[4] = String.valueOf(weatherStory.getList()[i].getWeather()[0].getMain());
+            temp[5] = weatherStory.getList()[i].getWind().getSpeed() + " m/c";
+            if (i % 8 == 1) {
+                story.add(temp);
             }
-
-            WeatherStoryAdapter adapter = new WeatherStoryAdapter(getContext(), story);
-            ListView listViewStory = (ListView) getView().findViewById(R.id.listViewHistory);
-            listViewStory.setAdapter(adapter);
-        } else {
-            ((MainActivity) getActivity()).onClickDialogBuilder(getView());
+            temp = new String[temp.length];
         }
+
+        WeatherStoryAdapter adapter = new WeatherStoryAdapter(getContext(), story);
+        ListView listViewStory = (ListView) getView().findViewById(R.id.listViewHistory);
+        listViewStory.setAdapter(adapter);
     }
 }

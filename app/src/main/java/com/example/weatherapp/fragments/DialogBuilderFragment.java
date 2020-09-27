@@ -28,6 +28,6 @@ public class DialogBuilderFragment extends DialogFragment {
                     }
                 })
                 .setMessage(R.string.message_dialog);
-       return builder.create();
+        return builder.create();
     }
 }
