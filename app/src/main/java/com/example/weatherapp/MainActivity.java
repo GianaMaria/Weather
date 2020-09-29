@@ -37,18 +37,15 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    DrawerLayout mDrawerLayout;
-    Toolbar toolbar;
-    ActionBarDrawerToggle mDrawerToggle;
+    private DrawerLayout mDrawerLayout;
+    private Toolbar toolbar;
+    private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-
-    ImageView imageView;
-
-    DialogBuilderFragment dialogBuilderFragment;
-    OtherCitiesFragment otherCitiesFragment = new OtherCitiesFragment();
-
+    private DialogBuilderFragment dialogBuilderFragment;
+    private OtherCitiesFragment otherCitiesFragment = new OtherCitiesFragment();
     private ArrayList<City> cities = new ArrayList<City>();
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,7 +218,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-
     // Вызов диалога с билдером
     public void onClickDialogBuilder(View view) {
         dialogBuilderFragment.show(getSupportFragmentManager(), "dialogBuilder");
@@ -231,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Метод для общения с диалоговыми окнами
     public void onDialogResult(String resultDialog) {
         fragmentTransaction(otherCitiesFragment);
-        Toast.makeText(this, "Выбрано " + resultDialog, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Выбрано " + resultDialog, Toast.LENGTH_SHORT).show();
     }
 
     public ArrayList<City> getArrayCities() {

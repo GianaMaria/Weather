@@ -10,8 +10,8 @@ import retrofit2.http.Query;
 public interface ServerAPI {
 
     @GET("weather")
-    Call<WeatherRequest> listWeather (@Query("q") String city, @Query("appid") String appkey);
+    Call<WeatherRequest> listWeather(@Query("q") String city, @Query("appid") String appkey);
 
     @GET("forecast")
-    Call<WeatherStory> listStory (@Query("q") String city, @Query("appid")String appkey);
+    Call<WeatherStory> listStory(@Query("q") String city, @Query("appid") String appkey);
 }

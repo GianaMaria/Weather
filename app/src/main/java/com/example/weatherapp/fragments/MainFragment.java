@@ -2,12 +2,12 @@ package com.example.weatherapp.fragments;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -16,11 +16,10 @@ import com.example.weather.BuildConfig;
 import com.example.weather.R;
 import com.example.weatherapp.HttpWeather;
 import com.example.weatherapp.MainActivity;
-import com.example.weatherapp.Parcel;
+import com.example.weatherapp.model.ErrorRequest;
 import com.example.weatherapp.model.WeatherRequest;
 import com.example.weatherapp.util.ServerAPI;
 import com.example.weatherapp.util.ServerWeatherAPIGenerator;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -44,7 +43,6 @@ public class MainFragment extends Fragment {
     String mCity;
 
     private static final String TAG = "WEATHER";
-    private static final String WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +58,7 @@ public class MainFragment extends Fragment {
     }
 
     private void init(View view) {
+
         buttonRefresh = (Button) view.findViewById(R.id.buttonRefresh);
         buttonHistory = (Button) view.findViewById(R.id.buttonForecast5);
 
@@ -67,10 +66,14 @@ public class MainFragment extends Fragment {
         temperature = view.findViewById(R.id.textTemper);
         windSPD = view.findViewById(R.id.textWind);
         forecast = view.findViewById(R.id.textForecast);
+
         Bundle bundle = this.getArguments();
+//        final Parcel parcel;
         if (bundle != null) {
-            Parcel parcel = (Parcel) bundle.getSerializable("city");
-            mCity = parcel.getCityName();
+//            parcel = getArguments().getParcelable("city");
+//            mCity = parcel.getCityName();
+            bundle.getString("city");
+            mCity = bundle.getString("city");
         } else {
             mCity = "Moscow";
 
@@ -122,16 +125,21 @@ public class MainFragment extends Fragment {
 
                 try {
                     response = weatherRequestRet.execute();
-
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            displayWeather(response.body());
-                        }
-                    });
+                    if (response.isSuccessful()) {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                displayWeather(response.body());
+                            }
+                        });
+                    } else {
+                        ServerWeatherAPIGenerator.parseError(response);
+                        ((MainActivity) getActivity()).onClickDialogBuilder(getView());
+                    }
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Error load display");
+
                 }
             }
         });
@@ -140,16 +148,10 @@ public class MainFragment extends Fragment {
 
     private void displayWeather(WeatherRequest weatherRequest) {
 
-        if (weatherRequest.getCod() == 200) {
-
-            city.setText(weatherRequest.getName());
-            temperature.setText(String.format(Locale.getDefault(), "%s °С", (int) weatherRequest.getMain().getTemp() - 273));
-            windSPD.setText(String.format(Locale.getDefault(), "%s m/c", weatherRequest.getWind().getSpeed()));
-            forecast.setText(weatherRequest.getWeather()[0].getDescription());
-
-        } else {
-            ((MainActivity) getActivity()).onClickDialogBuilder(getView());
-        }
+        city.setText(weatherRequest.getName());
+        temperature.setText(String.format(Locale.getDefault(), "%s °С", (int) weatherRequest.getMain().getTemp() - 273));
+        windSPD.setText(String.format(Locale.getDefault(), "%s m/c", weatherRequest.getWind().getSpeed()));
+        forecast.setText(weatherRequest.getWeather()[0].getDescription());
 
     }
 }

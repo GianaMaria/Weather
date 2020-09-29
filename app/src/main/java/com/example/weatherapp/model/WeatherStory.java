@@ -5,7 +5,6 @@ public class WeatherStory {
     private int cod;
     private WeatherRequest[] list;
 
-
     public int getCod() {
         return cod;
     }

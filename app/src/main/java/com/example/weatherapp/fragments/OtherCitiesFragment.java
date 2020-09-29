@@ -9,14 +9,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.weather.R;
 import com.example.weatherapp.MainActivity;
-import com.example.weatherapp.Parcel;
 import com.example.weatherapp.adapters.CitiesAdapter;
+
 import java.util.Date;
 
 public class OtherCitiesFragment extends Fragment {
-    Parcel parcel;
+//    Parcel parcel;
 
     private String[] cities;
 
@@ -52,9 +53,10 @@ public class OtherCitiesFragment extends Fragment {
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 ft.commit();
 
-                parcel = new Parcel(fi, getResources().getStringArray(R.array.cities)[fi]);
+//                parcel = new Parcel(getResources().getStringArray(R.array.cities)[fi]);
                 Bundle args = new Bundle();
-                args.putSerializable("city", parcel);
+                args.putString("city", getResources().getStringArray(R.array.cities)[fi]);
+//                args.putSerializable("city", parcel);
                 mainCityFragment.setArguments(args);
 
                 ((MainActivity) getActivity()).addCityArray(city, date.getTime());
