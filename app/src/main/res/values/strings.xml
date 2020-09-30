@@ -41,5 +41,6 @@
     <string name="send">Send</string>
     <string name="history_nav">History request</string>
     <string name="cities_nav">Cities</string>
+    <string name="clear">Clear</string>
 
 </resources>

@@ -2,12 +2,25 @@ package com.example.weatherapp.model;
 
 import android.text.format.DateFormat;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+
 import java.util.Calendar;
 import java.util.Locale;
 
+@Entity(indices = {@Index(value = {"city", "date"})})
 public class City {
-    private String nameCity;
-    private long date;
+
+    @ColumnInfo(name = "city")
+    public String nameCity;
+
+    @ColumnInfo(name = "date")
+    public long date;
+
+    @PrimaryKey(autoGenerate = true)
+    public long id;
 
     public String getNameCity() {
         return nameCity;
@@ -35,5 +48,8 @@ public class City {
     public City(String nameCity, long date) {
         this.nameCity = nameCity;
         this.date = date;
+    }
+
+    public City() {
     }
 }

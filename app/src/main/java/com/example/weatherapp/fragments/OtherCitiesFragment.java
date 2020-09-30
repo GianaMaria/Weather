@@ -1,5 +1,7 @@
 package com.example.weatherapp.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +15,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.weather.R;
 import com.example.weatherapp.MainActivity;
 import com.example.weatherapp.adapters.CitiesAdapter;
+import com.example.weatherapp.model.City;
+import com.example.weatherapp.sqlite.App;
+import com.example.weatherapp.sqlite.RequestDao;
 
 import java.util.Date;
 
 public class OtherCitiesFragment extends Fragment {
-//    Parcel parcel;
 
     private String[] cities;
+
+    SharedPreferences sPref;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
@@ -38,14 +44,14 @@ public class OtherCitiesFragment extends Fragment {
 
         adapter.setOnCityClickListener(new CitiesAdapter.OnCityClickListener() {
             @Override
-            public void onClicked(String city) {
+            public void onClicked(final String city) {
                 int fi = 0;
                 for (int i = 0; i < cities.length; i++) {
                     if (city.equals(cities[i])) {
                         fi = i;
                     }
                 }
-                //здесь при нажатии открывать другой фрагмент и менять текст
+
                 MainFragment mainCityFragment = new MainFragment();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, mainCityFragment);  // замена фрагмента
@@ -53,17 +59,41 @@ public class OtherCitiesFragment extends Fragment {
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 ft.commit();
 
-//                parcel = new Parcel(getResources().getStringArray(R.array.cities)[fi]);
                 Bundle args = new Bundle();
                 args.putString("city", getResources().getStringArray(R.array.cities)[fi]);
-//                args.putSerializable("city", parcel);
                 mainCityFragment.setArguments(args);
 
                 ((MainActivity) getActivity()).addCityArray(city, date.getTime());
-            }
 
+                savePref(city);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        RequestDao requestDao = App
+                                .getInstance()
+                                .getRequestDao();
+
+                        City sqlCity = new City();
+                        sqlCity.nameCity = city;
+                        sqlCity.date = date.getTime();
+
+                        requestDao.insertSQLCity(sqlCity);
+
+                    }
+                }).start();
+            }
         });
 
         return view;
     }
+
+    public void savePref(String city) {
+        sPref = this.getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sPref.edit();
+        editor.putString("city", city);
+        editor.apply();
+    }
+
 }
