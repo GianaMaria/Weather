@@ -1,9 +1,16 @@
 package com.example.weatherapp;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Paint;
+import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +35,8 @@ import com.example.weatherapp.fragments.MainFragment;
 import com.example.weatherapp.fragments.OtherCitiesFragment;
 import com.example.weatherapp.fragments.SettingsFragment;
 import com.example.weatherapp.model.City;
+import com.example.weatherapp.notif.MessageReceiver;
+import com.example.weatherapp.notif.NetworkReceiver;
 import com.example.weatherapp.util.CircleTransformation;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -42,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
+    private MessageReceiver messageReceiver;
+    private NetworkReceiver networkReceiver;
 
     ImageView imageView;
 
@@ -106,6 +117,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .error(R.drawable.ic_action_name_error)
                 .into(imageView);
 
+        messageReceiver = new MessageReceiver();
+        registerReceiver(messageReceiver, new IntentFilter(Intent.ACTION_BATTERY_LOW));
+
+        networkReceiver = new NetworkReceiver();
+        registerReceiver(networkReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+        initNotificationChannel();
+    }
+
+    // инициализация канала нотификаций
+    private void initNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel = new NotificationChannel("2", "name", importance);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     @Override
@@ -123,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Snackbar.make(searchText, s, Snackbar.LENGTH_LONG).show();
                 return true;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 return true;
