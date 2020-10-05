@@ -42,10 +42,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
+
+    ImageView imageView;
+
     private DialogBuilderFragment dialogBuilderFragment;
     private OtherCitiesFragment otherCitiesFragment = new OtherCitiesFragment();
+
     private ArrayList<City> cities = new ArrayList<City>();
-    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         dialogBuilderFragment = new DialogBuilderFragment();
 
-
         imageView = navigationView.getHeaderView(0).findViewById(R.id.imageView);
 
         Picasso.with(this)
@@ -103,11 +105,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .placeholder(R.drawable.ic_action_name_account)
                 .error(R.drawable.ic_action_name_error)
                 .into(imageView);
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu;
+
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
         MenuItem search = menu.findItem(R.id.action_search);
@@ -120,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Snackbar.make(searchText, s, Snackbar.LENGTH_LONG).show();
                 return true;
             }
-
             @Override
             public boolean onQueryTextChange(String s) {
                 return true;
@@ -180,11 +182,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         fragmentTransaction(fragment);
-
         return true;
     }
 
-    public void fragmentTransaction(Fragment fragment) {
+    private void fragmentTransaction(Fragment fragment) {
         if (fragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -218,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+
     // Вызов диалога с билдером
     public void onClickDialogBuilder(View view) {
         dialogBuilderFragment.show(getSupportFragmentManager(), "dialogBuilder");
@@ -227,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Метод для общения с диалоговыми окнами
     public void onDialogResult(String resultDialog) {
         fragmentTransaction(otherCitiesFragment);
-//        Toast.makeText(this, "Выбрано " + resultDialog, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Выбрано " + resultDialog, Toast.LENGTH_SHORT).show();
     }
 
     public ArrayList<City> getArrayCities() {

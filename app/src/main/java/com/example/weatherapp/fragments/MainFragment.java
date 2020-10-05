@@ -1,5 +1,7 @@
 package com.example.weatherapp.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -41,6 +43,7 @@ public class MainFragment extends Fragment {
     Button buttonRefresh;
     Button buttonHistory;
     String mCity;
+    SharedPreferences sPref;
 
     private static final String TAG = "WEATHER";
 
@@ -68,15 +71,11 @@ public class MainFragment extends Fragment {
         forecast = view.findViewById(R.id.textForecast);
 
         Bundle bundle = this.getArguments();
-//        final Parcel parcel;
         if (bundle != null) {
-//            parcel = getArguments().getParcelable("city");
-//            mCity = parcel.getCityName();
             bundle.getString("city");
             mCity = bundle.getString("city");
         } else {
-            mCity = "Moscow";
-
+            mCity = loadPref(mCity);
         }
 
         handler = new Handler();
@@ -117,7 +116,7 @@ public class MainFragment extends Fragment {
             @Override
             public void run() {
 
-                ServerAPI serverAPI = serverWeatherAPIGenerator.createServer();
+                ServerAPI serverAPI = ServerWeatherAPIGenerator.createServer();
 
                 Call<WeatherRequest> weatherRequestRet = serverAPI.listWeather(mCity, BuildConfig.WEATHER_API_KEY);
 
@@ -139,7 +138,6 @@ public class MainFragment extends Fragment {
 
                 } catch (IOException e) {
                     Log.e(TAG, "Error load display");
-
                 }
             }
         });
@@ -152,6 +150,11 @@ public class MainFragment extends Fragment {
         temperature.setText(String.format(Locale.getDefault(), "%s °С", (int) weatherRequest.getMain().getTemp() - 273));
         windSPD.setText(String.format(Locale.getDefault(), "%s m/c", weatherRequest.getWind().getSpeed()));
         forecast.setText(weatherRequest.getWeather()[0].getDescription());
+    }
 
+    public String loadPref(String city) {
+        sPref = this.getActivity().getPreferences(Context.MODE_PRIVATE);
+        String mCity = sPref.getString("city", "Moscow");
+        return mCity;
     }
 }
