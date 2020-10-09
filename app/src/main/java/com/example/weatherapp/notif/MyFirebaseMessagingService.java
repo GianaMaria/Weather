@@ -16,9 +16,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private int messageId = 1000;
 
-    public MyFirebaseMessagingService() {
-    }
-
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Log.d("PushMessage", remoteMessage.getNotification().getBody());

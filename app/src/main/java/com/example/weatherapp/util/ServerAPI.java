@@ -14,4 +14,7 @@ public interface ServerAPI {
 
     @GET("forecast")
     Call<WeatherStory> listStory(@Query("q") String city, @Query("appid") String appkey);
+
+    @GET("weather")
+    Call<WeatherRequest> listWeatherLat(@Query("lat") String lat, @Query("lon") String lon, @Query("appid") String appkey);
 }
